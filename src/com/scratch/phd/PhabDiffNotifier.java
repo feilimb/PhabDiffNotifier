@@ -25,6 +25,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import org.apache.commons.codec.digest.DigestUtils;
@@ -87,7 +88,6 @@ public class PhabDiffNotifier
       Properties props = new Properties();
       try
       {
-         //props.load(PhabDiffNotifier.class.getResourceAsStream("/config.properties"));
          props.load(new FileInputStream(new File(configPropertiesPath + "/config.properties")));
          
          PHABRICATOR_HOST_URL = props.getProperty("PHABRICATOR_HOST_URL");
@@ -368,7 +368,7 @@ public class PhabDiffNotifier
       DiffCheckTask task = new DiffCheckTask(conduitClient);
       Timer t = new Timer();
       int delay = Math.max(REPEAT_DELAY_SECONDS, MIN_REPEAT_DELAY_SECONDS);
-      t.schedule(task, 0, delay);
+      t.schedule(task, 0, TimeUnit.SECONDS.toMillis(delay));
    }
 
    private Map<String, DiffInfo> parseDiffInfos(JSONObject jsonResponse)
