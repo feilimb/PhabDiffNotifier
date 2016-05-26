@@ -274,9 +274,14 @@ public class PhabDiffNotifier
                      populateAuthorName(conduitClient, d);
                      StringBuilder message = new StringBuilder();
                      message.append("Author: ").append(d.authorName).append(NL)
-                        .append(d.title).append(NL)
-                        .append("Branch: ").append(d.branch).append(NL)
-                        .append("Diff: D").append(d.id).append(NL)
+                        .append("Status: ").append(d.statusName).append(NL)
+                        .append(d.title).append(NL);
+                     if (d.branch != null)
+                     {
+                        // in the case of status 'closed' the branch will be NULL
+                        message.append("Branch: ").append(d.branch).append(NL);
+                     }
+                     message.append("Diff: D").append(d.id).append(NL)
                         .append("Created: ").append(FMT_DATE_AND_TIME.format(d.dateCreated)).append(NL)
                         .append("Last Mod: ").append(FMT_DATE_AND_TIME.format(d.lastModified)).append(NL);
                      Notification notification = new Notification(application, notificationType, "Differential Updated", message.toString());
@@ -390,7 +395,9 @@ public class PhabDiffNotifier
             String lastModified = jd.getString("dateModified");
             di.lastModified = new Date(Long.valueOf(lastModified) * 1000l);
             di.authorPHID = jd.getString("authorPHID");
-            di.branch = jd.getString("branch");
+            di.branch = jd.getString("branch").equals("null") ? null : jd.getString("branch");
+            di.statusName = jd.getString("statusName");
+            
             diffs.put(di.id, di);
          }
       }

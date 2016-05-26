@@ -11,6 +11,7 @@ class DiffInfo
    String authorPHID;
    String branch;
    String authorName;
+   String statusName;
    Date lastModified;
    Date dateCreated;
 }
